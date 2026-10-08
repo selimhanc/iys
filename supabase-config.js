@@ -2,9 +2,9 @@
    Bu dosya herkese aciktir; icine sadece Project URL ve anon (publishable) key yazilir.
    service_role key ASLA buraya veya GitHub'a konulmaz. */
 window.SB_CONFIG = {
-  mode: 'local',
-  url: '',
-  anonKey: '',
+  mode: 'supabase',
+  url: 'https://pocfblrfmxnargckruyl.supabase.co',
+  anonKey: 'sb_publishable_WtwX6D_QR44MCBnwuXLYug_vuKFNY2j',
   emailDomain: 'iys.app',
   adminFn: ''
 };

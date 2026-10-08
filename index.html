@@ -780,13 +780,24 @@ async function sbClient(){
   if(!sb){sb=window.supabase.createClient(SB.url,SB.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});sb.auth.onAuthStateChange((event,session)=>{if(!session&&event!=='INITIAL_SESSION'){sbProfile=null;showAuthGate(true)}})}
   return sb;
 }
+async function loadProfile(user){
+  const c=await sbClient();
+  const cols='id,username,phone,status,is_admin,created_at,approved_at';
+  const {data,error}=await c.from('profiles').select(cols).eq('id',user.id).maybeSingle();
+  if(data)return data;
+  if(error)return null;
+  const meta=user.user_metadata||{};
+  const username=String(meta.username||(user.email||'').split('@')[0]).toLowerCase();
+  const ins=await c.from('profiles').insert({id:user.id,username,phone:meta.phone||null,status:'pending'}).select(cols).maybeSingle();
+  return ins.data||null;
+}
 async function refreshProfile(){
   if(!sbOn())return null;
   const c=await sbClient();
   const {data:{user}}=await c.auth.getUser();
   if(!user){sbProfile=null;showAuthGate(true);return null}
-  const {data,error}=await c.from('profiles').select('id,username,phone,status,is_admin,created_at,approved_at').eq('id',user.id).single();
-  if(error||!data){sbProfile=null;showAuthGate(true);return null}
+  const data=await loadProfile(user);
+  if(!data){sbProfile=null;showAuthGate(true);return null}
   sbProfile={id:data.id,username:data.username,phone:data.phone,status:data.status,isAdmin:data.is_admin};
   if(data.status==='active'){showAuthGate(false)}
   else{showAuthGate(true);authMessage('loginMsg',data.status==='pending'?'Uyelik talebin admin onayi bekliyor.':'Uyelik talebin reddedilmis.',true)}
