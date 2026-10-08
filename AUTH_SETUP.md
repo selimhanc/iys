@@ -13,6 +13,33 @@ Bu paket GitHub Pages'e doğrudan yüklenir: https://selimhanc.github.io/iys/
 
 Kampanya / içerik / ekip verisi her iki modda da cihazda (IndexedDB) kalır.
 
+## Veri katmanı
+
+`projects`, `campaigns`, `storyboards`, `team`, `countries`, `institutions` ve `settings`
+Supabase'de tutulur. IndexedDB artık yalnızca **yerel önbellek** görevi görür ve
+çevrimdışı çalışmayı sağlar.
+
+| Durum | Kaynak |
+| --- | --- |
+| Giriş yapılmış, çevrimiçi | Supabase (kaynak gerçek) |
+| Giriş yapılmış, çevrimdışı | IndexedDB önbelleği, bağlantı gelince eşitlenir |
+| `mode: 'local'` | IndexedDB (yedekleme / geri dönüş yolu) |
+
+Her satırın tamamı `data` jsonb sütununda saklanır; ayrıca `name`, `campaign_id`,
+`deadline` gibi kolonlar sorgulamak için kopyalanır. Yazmalar diff tabanlıdır,
+650 ms debounce ile toplanır ve sadece değişen kayıtlar gönderilir.
+
+### Veri taşıma (önemli)
+
+Supabase boşken bir cihazda veri varsa **hiçbir şey sessizce silinmez**. Uygulama
+"bu cihazdaki N kaydı Supabase'e taşınsın mı?" diye sorar; onaylanırsa taşır.
+Aynı işlem `⚙ Ayarlar → ☁ Cihaz Verisini Taşı` ile elle de yapılabilir.
+
+Supabase'de kayıt varsa cihazdakiler **geçersiz kılınır** (bulut kazanır). Bu yüzden
+taşımayı ilk girişten hemen sonra yap.
+
+## Edge Function (opsiyonel)
+
 ## Supabase kurulumu
 
 1. Proje oluştur, ardından `supabase-schema.sql` içeriğini **SQL Editor → New query → Run** ile çalıştır.
@@ -35,5 +62,7 @@ Kampanya / içerik / ekip verisi her iki modda da cihazda (IndexedDB) kalır.
 
 - Şifreler hiçbir koşulda düz metin tutulmaz; Supabase Auth `bcrypt` ile hash'ler.
 - Kullanıcı kayıtları `pending` başlar, admin onayı olmadan giriş yapılamaz.
-- RLS herkese açıktır: kullanıcı yalnızca kendi satırını, admin tüm satırları okur.
+- RLS herkese açıktır: kullanıcı yalnızca kendi satırlarını, admin tüm kullanıcı
+  satırlarını okur. Kampanya verisi yalnızca sahibine görünür.
+- Üst bardaki `☁ Supabase · eşitlendi` göstergesi senkronizasyon durumunu bildirir.
 - Geri dönmek için `supabase-config.js` içinde `mode: 'local'` yapmak yeterlidir.

@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="İçerik Yönetim Sistemi"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>İçerik Yönetim Sistemi</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#0f1115;color:#eee;font:14px Arial,sans-serif;--bg:#0f1115;--panel:#191c21;--panel2:#15181d;--line:#30343b;--input:#111419;--border:#39404a;--text:#eee;--muted:#929aa6;--card:#191c21;--soft:#1e2229;--accent:#3b73e8;--accentSoft:#1f2a44}body.light{background:#f3f0e8;color:#252525;--bg:#f3f0e8;--panel:#fffdf7;--panel2:#f7f4ec;--line:#d8d2c6;--input:#fffefa;--border:#c9c2b5;--text:#252525;--muted:#6f7683;--card:#fffdf7;--soft:#f1ede2;--accent:#3b73e8;--accentSoft:#dde8fd}body.light header,body.light .topbar{background:#ebe7dc}body.light .itemCard,body.light .panel,body.light .list,body.light .modalCard{background:var(--panel);border-color:var(--line)}body.light input,body.light select,body.light textarea{background:var(--input);color:#252525;border-color:#c9c2b5}body.light button{background:#e8e3d8;color:#292929;border-color:#c9c2b5}button{border:1px solid #39404a;border-radius:7px;padding:9px 12px;background:#252a31;color:#fff;cursor:pointer}button:hover{background:#323943}.primary{background:#3b73e8;border-color:#3b73e8}.danger{background:#7b2b33}.muted{color:#929aa6;font-size:12px}header{min-height:64px;padding:10px 16px;background:#181b21;border-bottom:1px solid #30343b;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:50}.brand{display:flex;align-items:center;gap:10px}.brand h1{font-size:18px;margin:0}.menuBtn{display:none}.nav{display:flex;gap:5px;align-items:center;flex-wrap:wrap}.nav button.active{background:#3b73e8;border-color:#3b73e8}.topbar{padding:12px 16px;background:#14171c;border-bottom:1px solid #30343b;display:flex;align-items:center;justify-content:space-between;gap:10px}.workspace{padding:18px;max-width:1500px;margin:auto}.view{display:none}.view.active{display:block}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}.toolbar h2{margin:0}.actions{display:flex;gap:8px;flex-wrap:wrap}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}.itemCard{background:#191c21;border:1px solid #30343b;border-radius:12px;padding:15px;min-height:155px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer}.itemCard:hover{border-color:#586273}.itemCard .icon{font-size:34px;margin-bottom:10px}.itemCard h3{margin:0 0 6px;font-size:16px}.itemCard .meta{color:#939ba6;font-size:12px;line-height:1.7}.cardActions{display:flex;gap:7px;margin-top:12px}.list{background:#191c21;border:1px solid #30343b;border-radius:10px;overflow:hidden}.listRow{display:grid;grid-template-columns:1.5fr .8fr .8fr 170px;gap:10px;padding:13px 15px;border-bottom:1px solid #2b3037;align-items:center}.listRow:last-child{border-bottom:0}.listHead{color:#8f97a3;font-size:12px;background:#15181d}.empty{text-align:center;padding:45px;color:#8d95a0;border:1px dashed #3a4048;border-radius:10px}.storyLayout{display:grid;grid-template-columns:300px 1fr;gap:16px}.panel{background:#191c21;border:1px solid #30343b;border-radius:10px;padding:14px}.editorGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.full{grid-column:1/-1}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}label{display:block;color:#aeb5bf;font-size:12px;margin-bottom:5px}input,select,textarea{width:100%;padding:9px;margin-bottom:12px;background:#111419;color:#eee;border:1px solid #3b414b;border-radius:6px}textarea{min-height:115px;resize:vertical}.sceneList{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}.scene{min-width:170px;padding:10px;background:#15181d;border:1px solid #30343b;border-radius:8px;cursor:pointer}.scene.active{border-color:#5d8df5}.json textarea{height:300px;font:12px Consolas,monospace}.modal{display:none;position:fixed;inset:0;background:#000b;z-index:100;align-items:center;justify-content:center;padding:18px}.modal.show{display:flex}.modalCard{width:min(650px,96vw);max-height:90vh;overflow:auto;background:#1a1e24;border:1px solid #3a414b;border-radius:12px;padding:18px;box-shadow:0 20px 70px #000}.modalHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.modalHead h2{margin:0}.viewToggle{display:flex;gap:6px}.hint{padding:11px;background:#15181d;border:1px dashed #363d47;border-radius:8px;color:#9aa2ad;font-size:12px;line-height:1.5}.tag{display:inline-block;padding:4px 7px;border-radius:999px;background:#303844;color:#c9d5ef;font-size:11px;margin:2px 3px 2px 0}.tag button{padding:1px 5px;margin-left:3px}.campaignBadge{display:inline-block;padding:4px 7px;border-radius:5px;background:#252d3b;color:#a9c0ff;font-size:11px}.storage{font-size:11px;color:#8f97a3}.suggestions{display:flex;gap:5px;flex-wrap:wrap;margin:-5px 0 8px}.suggestions button{padding:5px 8px;font-size:11px}.dropzone{border:1px dashed #46505e;padding:14px;border-radius:8px;margin:8px 0;color:#aab2bd}.status{font-size:12px;color:#8f97a3}.due{font-weight:700}.msgBtn{font-size:16px;padding:5px 8px}.overdue{color:#ff7777}.soon{color:#e7b85c}.ok{color:#79d99a}
+*{box-sizing:border-box}body{margin:0;background:#0f1115;color:#eee;font:14px Arial,sans-serif;--bg:#0f1115;--panel:#191c21;--panel2:#15181d;--line:#30343b;--input:#111419;--border:#39404a;--text:#eee;--muted:#929aa6;--card:#191c21;--soft:#1e2229;--accent:#3b73e8;--accentSoft:#1f2a44}body.light{background:#f3f0e8;color:#252525;--bg:#f3f0e8;--panel:#fffdf7;--panel2:#f7f4ec;--line:#d8d2c6;--input:#fffefa;--border:#c9c2b5;--text:#252525;--muted:#6f7683;--card:#fffdf7;--soft:#f1ede2;--accent:#3b73e8;--accentSoft:#dde8fd}body.light header,body.light .topbar{background:#ebe7dc}body.light .itemCard,body.light .panel,body.light .list,body.light .modalCard{background:var(--panel);border-color:var(--line)}body.light input,body.light select,body.light textarea{background:var(--input);color:#252525;border-color:#c9c2b5}body.light button{background:#e8e3d8;color:#292929;border-color:#c9c2b5}button{border:1px solid #39404a;border-radius:7px;padding:9px 12px;background:#252a31;color:#fff;cursor:pointer}button:hover{background:#323943}.primary{background:#3b73e8;border-color:#3b73e8}.danger{background:#7b2b33}.muted{color:#929aa6;font-size:12px}header{min-height:64px;padding:10px 16px;background:#181b21;border-bottom:1px solid #30343b;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:50}.brand{display:flex;align-items:center;gap:10px}.brand h1{font-size:18px;margin:0}.menuBtn{display:none}.nav{display:flex;gap:5px;align-items:center;flex-wrap:wrap}.nav button.active{background:#3b73e8;border-color:#3b73e8}.topbar{padding:12px 16px;background:#14171c;border-bottom:1px solid #30343b;display:flex;align-items:center;justify-content:space-between;gap:10px}.workspace{padding:18px;max-width:1500px;margin:auto}.view{display:none}.view.active{display:block}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}.toolbar h2{margin:0}.actions{display:flex;gap:8px;flex-wrap:wrap}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}.itemCard{background:#191c21;border:1px solid #30343b;border-radius:12px;padding:15px;min-height:155px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer}.itemCard:hover{border-color:#586273}.itemCard .icon{font-size:34px;margin-bottom:10px}.itemCard h3{margin:0 0 6px;font-size:16px}.itemCard .meta{color:#939ba6;font-size:12px;line-height:1.7}.cardActions{display:flex;gap:7px;margin-top:12px}.list{background:#191c21;border:1px solid #30343b;border-radius:10px;overflow:hidden}.listRow{display:grid;grid-template-columns:1.5fr .8fr .8fr 170px;gap:10px;padding:13px 15px;border-bottom:1px solid #2b3037;align-items:center}.listRow:last-child{border-bottom:0}.listHead{color:#8f97a3;font-size:12px;background:#15181d}.empty{text-align:center;padding:45px;color:#8d95a0;border:1px dashed #3a4048;border-radius:10px}.storyLayout{display:grid;grid-template-columns:300px 1fr;gap:16px}.panel{background:#191c21;border:1px solid #30343b;border-radius:10px;padding:14px}.editorGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.full{grid-column:1/-1}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}label{display:block;color:#aeb5bf;font-size:12px;margin-bottom:5px}input,select,textarea{width:100%;padding:9px;margin-bottom:12px;background:#111419;color:#eee;border:1px solid #3b414b;border-radius:6px}textarea{min-height:115px;resize:vertical}.sceneList{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}.scene{min-width:170px;padding:10px;background:#15181d;border:1px solid #30343b;border-radius:8px;cursor:pointer}.scene.active{border-color:#5d8df5}.json textarea{height:300px;font:12px Consolas,monospace}.modal{display:none;position:fixed;inset:0;background:#000b;z-index:100;align-items:center;justify-content:center;padding:18px}.modal.show{display:flex}.modalCard{width:min(650px,96vw);max-height:90vh;overflow:auto;background:#1a1e24;border:1px solid #3a414b;border-radius:12px;padding:18px;box-shadow:0 20px 70px #000}.modalHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.modalHead h2{margin:0}.viewToggle{display:flex;gap:6px}.hint{padding:11px;background:#15181d;border:1px dashed #363d47;border-radius:8px;color:#9aa2ad;font-size:12px;line-height:1.5}.tag{display:inline-block;padding:4px 7px;border-radius:999px;background:#303844;color:#c9d5ef;font-size:11px;margin:2px 3px 2px 0}.tag button{padding:1px 5px;margin-left:3px}.campaignBadge{display:inline-block;padding:4px 7px;border-radius:5px;background:#252d3b;color:#a9c0ff;font-size:11px}.storage{font-size:11px;color:#8f97a3}.storage.err{color:#ff8b8b;font-weight:700}.suggestions{display:flex;gap:5px;flex-wrap:wrap;margin:-5px 0 8px}.suggestions button{padding:5px 8px;font-size:11px}.dropzone{border:1px dashed #46505e;padding:14px;border-radius:8px;margin:8px 0;color:#aab2bd}.status{font-size:12px;color:#8f97a3}.due{font-weight:700}.msgBtn{font-size:16px;padding:5px 8px}.overdue{color:#ff7777}.soon{color:#e7b85c}.ok{color:#79d99a}
 @media(max-width:800px){header{padding:9px 11px}.menuBtn{display:inline-flex}.nav{width:100%;display:none}.nav.open{display:flex}.nav button{flex:1}.topbar{padding:10px 12px}.workspace{padding:12px}.editorGrid{grid-template-columns:1fr}.full{grid-column:auto}.row,.row3{grid-template-columns:1fr}.listRow{grid-template-columns:1fr 1fr}.listHead{display:none}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.itemCard{min-height:150px;padding:12px}.toolbar{align-items:flex-start}.toolbar .actions{width:100%}.toolbar .actions button{flex:1}.sceneList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));max-height:240px;overflow:auto}.scene{min-width:0}.brand h1{font-size:15px}}
 @media(max-width:520px){.grid{grid-template-columns:1fr}.listRow{grid-template-columns:1fr}.listRow .actions{justify-content:flex-start}.topbar .actions{display:none}}
 .timelineLane{display:flex;flex-direction:column;gap:8px}.timelineItem{display:grid;grid-template-columns:90px 1fr;gap:10px;align-items:stretch;cursor:pointer}.timelineDate{padding:12px 8px;color:#9ca5b1;font-size:12px;text-align:right}.timelineBar{background:#15181d;border:1px solid #30343b;border-left:4px solid #3b73e8;border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;gap:12px;align-items:center}.timelineBar span{color:#929aa6;font-size:12px}@media(max-width:520px){.timelineItem{grid-template-columns:70px 1fr}.timelineBar{display:block}.timelineBar span{display:block;margin-top:5px}}
@@ -110,7 +110,7 @@ body.nav-collapsed .navGroup button{font-size:0}
 <header>
     <div class="brand"><button class="menuBtn" onclick="toggleNav()">☰</button><h1>📋 İçerik Yönetim Sistemi</h1></div><nav id="nav" class="nav"><button class="navClose" onclick="closeNav()">✕</button><button id="navCampaigns" onclick="showCampaigns()">📁 Kampanyalar</button><button id="navContent" onclick="showStoryboards()">🧩 İçerikler</button><button onclick="openCampaignModal()">＋ Kampanya</button><button onclick="openStoryboardModal()">＋ İçerik</button><button onclick="openTeamModal()">👥 Ekip</button><button onclick="openTimeline()">📅 Timeline</button><button onclick="openSettingsModal()">⚙ Ayarlar</button><button onclick="toggleTheme()" id="themeBtn">☀️</button></nav><div class="headerActions"><button id="pwaInstallBtn" class="secondary" hidden onclick="installKampanyaApp()">📲 Kur</button><div id="adminUserPanel" class="adminUserPanel"><button onclick="openUserAdmin()">👥 Kullanıcılar</button><button onclick="authLogout()">Çıkış</button></div></div></header>
 <div id="navBackdrop" class="navBackdrop" onclick="closeNav()"></div>
-<div id="topbar" class="topbar"><div><strong id="contextTitle">Kampanyalar</strong><div id="contextSub" class="muted">Önce kampanya oluştur, sonra storyboard ekle.</div></div><div class="actions"><span id="storageStatus" class="storage">IndexedDB hazırlanıyor…</span><button id="backBtn" style="display:none" onclick="backToPrevious()">← Geri</button></div></div>
+<div id="topbar" class="topbar"><div><strong id="contextTitle">Kampanyalar</strong><div id="contextSub" class="muted">Önce kampanya oluştur, sonra storyboard ekle.</div></div><div class="actions"><span id="syncStatus" class="storage"></span><span id="storageStatus" class="storage">IndexedDB hazırlanıyor…</span><button id="backBtn" style="display:none" onclick="backToPrevious()">← Geri</button></div></div>
 <main class="workspace">
 <section id="campaignView" class="view active"><div class="toolbar"><h2>Kampanyalar</h2><div class="actions"><div class="viewToggle"><button id="campGridBtn" class="active" onclick="setCampaignView('grid')">▦ Kutu</button><button id="campListBtn" onclick="setCampaignView('list')">☷ Liste</button></div><button class="primary" onclick="openCampaignModal()">＋ Yeni Kampanya</button></div></div><div id="campaignsContainer"></div></section>
 <section id="storyboardView" class="view"><div class="toolbar"><div><h2>İçerikler</h2><span id="storyCampaignHint" class="muted"></span></div><div class="actions"><div class="viewToggle"><button id="storyGridBtn" class="active" onclick="setStoryboardView('grid')">▦ Kutu</button><button id="storyListBtn" onclick="setStoryboardView('list')">☷ Liste</button></div><button class="primary" onclick="openStoryboardModal()">＋ Yeni Storyboard</button></div></div><div id="storyboardsContainer"></div></section>
@@ -130,15 +130,146 @@ body.nav-collapsed .navGroup button{font-size:0}
 Teslim tarihi: {teslim}
 Kalan süre: {kalan}
 Mevcut durum: {durum}
-Ne durumdayız? Lütfen bilgileri güncelleyebilir misiniz?"></textarea><div class="actions"><button onclick="closeModal('settingsModal')">İptal</button><button onclick="exportProject()">📦 Dışa Aktar</button><button onclick="openImport()">📥 İçe Aktar</button><button class="primary" onclick="saveMessageSettings()">Kaydet</button></div></div></div><div id="teamModal" class="modal"><div class="modalCard"><div class="modalHead"><h2>👥 Ekip Yönetimi</h2><button onclick="closeModal('teamModal')">Kapat</button></div><div id="teamList"></div><hr><label>İsim</label><input id="teamName" placeholder="Ad Soyad"><label>Hitap şekli</label><input id="teamSalutation" placeholder="Ahmet Bey / Ayşe Hanım / Hocam"><label>Telefon</label><div class="row"><input id="teamPhone" placeholder="+90 5xx xxx xx xx"><button type="button" onclick="pickContactForTeam()">📱 Rehberden Seç</button></div><div class="hint">Rehber erişimi tarayıcı/cihaz desteğine bağlıdır; izin verdiğinde isim ve telefon alınır.</div><label>Konum</label><div id="teamLocations" class="radioGrid"></div><label>Vazife</label><div id="teamDuties" class="radioGrid"></div><label>Etiketler</label><input id="teamTags" placeholder="etiket yaz + Enter / virgül"><input id="teamEditId" type="hidden"><div class="actions"><button onclick="closeModal('teamModal')">Kapat</button><button class="primary" id="teamSaveBtn" onclick="addTeamMember()">Ekip Üyesi Ekle</button></div></div></div><div id="importModal" class="modal"><div class="modalCard"><div class="modalHead"><h2>📥 Proje İçe Aktar</h2><button onclick="closeModal('importModal')">Kapat</button></div><div class="dropzone">.storyproj veya .json dosyanı seç. Mevcut veriler silinmez; içe aktarılan kayıtlar eklenir.</div><input id="importFile" type="file" accept=".storyproj,.json,application/json"><div class="actions"><button onclick="closeModal('importModal')">İptal</button><button class="primary" onclick="importProject()">İçe Aktar</button></div></div></div>
+Ne durumdayız? Lütfen bilgileri güncelleyebilir misiniz?"></textarea><div class="actions"><button onclick="closeModal('settingsModal')">İptal</button><button onclick="exportProject()">📦 Dışa Aktar</button><button onclick="openImport()">📥 İçe Aktar</button><button onclick="migrateLocalToCloud()">☁ Cihaz Verisini Taşı</button><button class="primary" onclick="saveMessageSettings()">Kaydet</button></div></div></div><div id="teamModal" class="modal"><div class="modalCard"><div class="modalHead"><h2>👥 Ekip Yönetimi</h2><button onclick="closeModal('teamModal')">Kapat</button></div><div id="teamList"></div><hr><label>İsim</label><input id="teamName" placeholder="Ad Soyad"><label>Hitap şekli</label><input id="teamSalutation" placeholder="Ahmet Bey / Ayşe Hanım / Hocam"><label>Telefon</label><div class="row"><input id="teamPhone" placeholder="+90 5xx xxx xx xx"><button type="button" onclick="pickContactForTeam()">📱 Rehberden Seç</button></div><div class="hint">Rehber erişimi tarayıcı/cihaz desteğine bağlıdır; izin verdiğinde isim ve telefon alınır.</div><label>Konum</label><div id="teamLocations" class="radioGrid"></div><label>Vazife</label><div id="teamDuties" class="radioGrid"></div><label>Etiketler</label><input id="teamTags" placeholder="etiket yaz + Enter / virgül"><input id="teamEditId" type="hidden"><div class="actions"><button onclick="closeModal('teamModal')">Kapat</button><button class="primary" id="teamSaveBtn" onclick="addTeamMember()">Ekip Üyesi Ekle</button></div></div></div><div id="importModal" class="modal"><div class="modalCard"><div class="modalHead"><h2>📥 Proje İçe Aktar</h2><button onclick="closeModal('importModal')">Kapat</button></div><div class="dropzone">.storyproj veya .json dosyanı seç. Mevcut veriler silinmez; içe aktarılan kayıtlar eklenir.</div><input id="importFile" type="file" accept=".storyproj,.json,application/json"><div class="actions"><button onclick="closeModal('importModal')">İptal</button><button class="primary" onclick="importProject()">İçe Aktar</button></div></div></div>
 <script>
 const DB_NAME='storyboard_prompt_motor_db',DB_VERSION=1,STORE='app';let db={campaigns:[],storyboards:[],team:[],settings:{messageIntro:'Selamünaleyküm {isim} {hitap}, hayırlı hizmetler, nasılsınız?',messageReminder:'Kampanya: {kampanya}\nİçerik: {icerik}\nTeslim tarihi: {teslim}\nKalan süre: {kalan}\nMevcut durum: {durum}\nNe durumdayız? Lütfen durumu güncelleyip bilgi verir misiniz?'}},activeCampaignId=null,activeStoryboardId=null,sel=0,campaignView='grid',storyboardView='grid',draftTags=[];
 const uid=()=>Date.now()+'_'+Math.random().toString(36).slice(2,8),esc=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME,DB_VERSION);r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains(STORE))d.createObjectStore(STORE)};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
 async function idbGet(){const d=await openDB();return new Promise((res,rej)=>{const r=d.transaction(STORE,'readonly').objectStore(STORE).get('state');r.onsuccess=()=>res(r.result||null);r.onerror=()=>rej(r.error)})}
 async function idbSet(v){const d=await openDB();return new Promise((res,rej)=>{const r=d.transaction(STORE,'readwrite').objectStore(STORE).put(v,'state');r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
-async function persist(){try{await idbSet(db);updateStorageStatus()}catch(e){console.error(e);document.getElementById('storageStatus').textContent='IndexedDB kaydı başarısız'}}
-async function updateStorageStatus(){try{const q=await navigator.storage?.estimate?.();if(q){const used=(q.usage/1024/1024).toFixed(2),quota=(q.quota/1024/1024).toFixed(0);document.getElementById('storageStatus').textContent=`IndexedDB · ${used} MB / ~${quota} MB`}}catch{} }
+
+/* ===== data layer: IndexedDB cache + Supabase as the shared source of truth =====
+   The whole app reads/writes the in-memory `db` object, so only these four
+   functions need to know where the bytes live. When Supabase is enabled and the
+   user is signed in, IndexedDB becomes a local cache and Supabase is pushed.
+*/
+const DATA_TABLES={
+  projects:{table:'projects',list:()=>db.projects||[],order:'created_at'},
+  campaigns:{table:'campaigns',list:()=>db.campaigns||[],order:'created_at'},
+  storyboards:{table:'storyboards',list:()=>db.storyboards||[],order:'created_at'},
+  team:{table:'team_members',list:()=>db.team||[]},
+  countries:{table:'reference_items',list:()=>db.countries||[],kind:'countries'},
+  institutions:{table:'reference_items',list:()=>db.institutions||[],kind:'institutions'}
+};
+const DEFAULT_SETTINGS=db.settings;
+let dataMode='local',cloudSynced=false,cloudRows={},pushTimer=null,pushing=false,pushAgain=false;
+const dateOnly=v=>{const s=String(v||'');return /^\d{4}-\d{2}-\d{2}/.test(s)?s.slice(0,10):null};
+function rowFor(kind,item){
+  if(kind==='projects')return{id:item.id,name:item.name||null,created_at:item.createdAt||null,data:item};
+  if(kind==='campaigns')return{id:item.id,project_id:item.projectId||null,name:item.name||null,start_date:dateOnly(item.startDate),end_date:dateOnly(item.endDate),created_at:item.createdAt||null,data:item};
+  if(kind==='storyboards')return{id:item.id,campaign_id:item.campaignId||null,project_id:item.projectId||null,name:item.name||null,content_type:item.contentType||null,deadline:dateOnly(item.deadline),publish_date:dateOnly(item.publishDate),status:item.status||null,created_at:item.createdAt||null,data:item};
+  if(kind==='team')return{id:item.id,name:item.name||null,phone:item.phone||null,data:item};
+  return{id:item.id,kind:DATA_TABLES[kind].kind,name:item.name||null,data:item};
+}
+async function cloudPull(){
+  const c=await sbClient();
+  const grab=async q=>{const{data,error}=await q;if(error)throw new Error(error.message);return data||[]};
+  const [projects,campaigns,storyboards,members,refs,settings]=await Promise.all([
+    grab(c.from('projects').select('data').order('created_at',{ascending:false})),
+    grab(c.from('campaigns').select('data').order('created_at',{ascending:false})),
+    grab(c.from('storyboards').select('data').order('created_at',{ascending:false})),
+    grab(c.from('team_members').select('data').order('name')),
+    grab(c.from('reference_items').select('data,kind').order('name')),
+    grab(c.from('app_settings').select('data').limit(1))
+  ]);
+  const unpack=(rows,kind)=>rows.map(r=>{const o=r.data&&typeof r.data==='object'?{...r.data}:{};o.id=o.id||r.id;return o});
+  const out={campaigns:unpack(campaigns),storyboards:unpack(storyboards),team:unpack(members),
+    countries:unpack(refs.filter(r=>r.kind==='countries')),institutions:unpack(refs.filter(r=>r.kind==='institutions')),
+    projects:unpack(projects),settings:settings[0]?.data&&typeof settings[0].data==='object'?{...DEFAULT_SETTINGS,...settings[0].data}:{...DEFAULT_SETTINGS}};
+  cloudRows={projects:out.projects,campaigns:out.campaigns,storyboards:out.storyboards,team:out.team,countries:out.countries,institutions:out.institutions};
+  return out;
+}
+async function cloudPush(){
+  if(pushing){pushAgain=true;return}
+  pushing=true;
+  try{
+    const c=await sbClient();
+    for(const kind of Object.keys(DATA_TABLES)){
+      const cfg=DATA_TABLES[kind];
+      const items=cfg.list();
+      const before=new Map((cloudRows[kind]||[]).map(x=>[x.id,JSON.stringify(x)]));
+      const after=new Map(items.map(x=>[x.id,JSON.stringify(x)]));
+      const added=items.filter(x=>!before.has(x.id));
+      const changed=items.filter(x=>before.has(x.id)&&before.get(x.id)!==after.get(x.id));
+      const removed=[...before.keys()].filter(id=>!after.has(id));
+      const payload=[...added,...changed].map(x=>rowFor(kind,x));
+      if(payload.length){
+        if(cfg.kind){
+          const byKind={};payload.forEach(r=>{(byKind[r.kind]=byKind[r.kind]||[]).push(r)});
+          for(const k of Object.keys(byKind)){
+            const r=await c.from(cfg.table).upsert(byKind[k],{onConflict:'id'});
+            if(r.error)throw new Error(cfg.table+': '+r.error.message);
+          }
+        }else{
+          const r=await c.from(cfg.table).upsert(payload,{onConflict:'id'});
+          if(r.error)throw new Error(cfg.table+': '+r.error.message);
+        }
+      }
+      if(removed.length){
+        let q=c.from(cfg.table).delete().in('id',removed);
+        if(cfg.kind)q=q.eq('kind',cfg.kind);
+        const r=await q;
+        if(r.error)throw new Error(cfg.table+' delete: '+r.error.message);
+      }
+      cloudRows[kind]=items.map(x=>JSON.parse(JSON.stringify(x)));
+    }
+    const r=await c.from('app_settings').upsert({data:db.settings||DEFAULT_SETTINGS},{onConflict:'owner_id'});
+    if(r.error)throw new Error('app_settings: '+r.error.message);
+    cloudSynced=true;setSyncStatus('ok');
+  }catch(e){
+    console.error('Supabase push failed',e);setSyncStatus('err',e.message);
+  }finally{
+    pushing=false;
+    if(pushAgain){pushAgain=false;clearTimeout(pushTimer);pushTimer=setTimeout(cloudPush,700)}
+  }
+}
+function schedulePush(){if(dataMode!=='remote')return;clearTimeout(pushTimer);pushTimer=setTimeout(cloudPush,650)}
+function setSyncStatus(state,msg){
+  const el=document.getElementById('syncStatus');if(!el)return;
+  if(state==='ok'){el.textContent='☁ Supabase · eşitlendi';el.classList.remove('err')}
+  else if(state==='err'){el.textContent='☁ Supabase · hata: '+(msg||'');el.classList.add('err')}
+  else{el.textContent='☁ Supabase · eşitleniyor…'}
+}
+async function persist(){try{await idbSet(db)}catch(e){console.error(e);const s=document.getElementById('storageStatus');if(s)s.textContent='Yerel kayıt başarısız'}
+  if(dataMode==='remote'){setSyncStatus('busy');schedulePush()}else updateStorageStatus()}
+function localDataCount(){return['projects','campaigns','storyboards','team','countries','institutions'].reduce((a,k)=>a+((db[k]||[]).length),0)}
+function cloudDataCount(){return Object.values(cloudRows).reduce((a,r)=>a+(r||[]).length,0)}
+/* Decide the source of truth once, right after sign-in.
+   Cloud wins whenever it has rows. If the cloud is empty but this device has
+   data, nothing is overwritten -- the user is offered the migration instead. */
+async function cloudAdopt(){
+  dataMode='remote';cloudSynced=false;
+  try{
+    const cloud=await cloudPull();
+    const cc=cloudDataCount(),lc=localDataCount();
+    if(cc===0&&lc>0){setSyncStatus('idle');return 'has-local'}
+    Object.assign(db,cloud);db.team=db.team||[];db.projects=db.projects||[];db.countries=db.countries||[];db.institutions=db.institutions||[];
+    activeCampaignId=null;activeStoryboardId=null;
+    await persist();setSyncStatus('ok');renderCurrentView();
+    return cc===0?'empty':'synced';
+  }catch(e){console.error('Supabase pull failed',e);setSyncStatus('err',e.message);dataMode='local';return 'failed'}
+}
+function renderCurrentView(){
+  try{
+    if(document.getElementById('sceneView')?.classList.contains('active')&&activeStoryboardId){const sc=current()?.scenes?.[sel];if(sc)showScenePage(activeStoryboardId,sc.id)}
+    else if(document.getElementById('editorView')?.classList.contains('active')&&activeStoryboardId)showEditor(activeStoryboardId);
+    else if(document.getElementById('storyboardView')?.classList.contains('active'))showStoryboards(activeCampaignId);
+    else showCampaigns();
+  }catch(e){console.warn('render after sync failed',e)}
+}
+async function migrateLocalToCloud(){
+  if(dataMode!=='remote'){alert('Supabase modunda değilsin.');return}
+  const lc=localDataCount();
+  if(!lc){alert('Bu cihazda taşınacak veri yok.');return}
+  if(!confirm(`${lc} kayıt bulundu. Bunlar Supabase'e yüklensin mi?\n\nSupabase'de aynı kayıt varsa üzerine yazılır.`))return;
+  setSyncStatus('busy');
+  try{
+    cloudRows={projects:[],campaigns:[],storyboards:[],team:[],countries:[],institutions:[]};
+    await cloudPush();
+    alert(`${lc} kayıt Supabase'e taşındı. Artık tüm cihazlarda görünecek.`);
+  }catch(e){alert('Taşıma başarısız: '+e.message)}
+}
+async function updateStorageStatus(){try{const q=await navigator.storage?.estimate?.();if(q){const used=(q.usage/1024/1024).toFixed(2),quota=(q.quota/1024/1024).toFixed(0);const s=document.getElementById('storageStatus');if(s&&dataMode!=='remote')s.textContent=`IndexedDB · ${used} MB / ~${quota} MB`}}catch{} }
 function toggleTheme(){document.body.classList.toggle('light');localStorage.setItem('sb_theme',document.body.classList.contains('light')?'light':'dark');updateThemeBtn()}function updateThemeBtn(){document.getElementById('themeBtn').textContent=document.body.classList.contains('light')?'🌙 Koyu':'☀️ Açık'}
 function navBackdrop(){return document.getElementById('navBackdrop')}
 function toggleNav(){if(innerWidth<=800){const o=document.getElementById('nav').classList.toggle('open');navBackdrop()?.classList.toggle('show',o);document.body.classList.toggle('nav-open',o)}else{document.body.classList.toggle('nav-collapsed');localStorage.setItem('adminNavCollapsed',document.body.classList.contains('nav-collapsed')?'1':'0')}}
@@ -815,9 +946,15 @@ async function refreshProfile(){
   const data=await loadProfile(user);
   if(!data){sbProfile=null;showAuthGate(true);return null}
   sbProfile={id:data.id,username:data.username,phone:data.phone,status:data.status,isAdmin:data.is_admin};
-  if(data.status==='active'){showAuthGate(false)}
+  if(data.status==='active'){showAuthGate(false);cloudAdopt().then(r=>{if(r==='has-local')offerLocalMigration()})}
   else{showAuthGate(true);authMessage('loginMsg',data.status==='pending'?'Uyelik talebin admin onayi bekliyor.':'Uyelik talebin reddedilmis.',true)}
   return sbProfile;
+}
+function offerLocalMigration(){
+  const lc=localDataCount();
+  if(!lc)return;
+  setSyncStatus('idle');
+  if(confirm(`Bu cihazda ${lc} kampanya/içerik kaydı var ama Supabase boş.\n\nBu kayıtları Supabase'e taşıyalım mı? (Taşınırsa tüm cihazlarda görünür.)`))migrateLocalToCloud();
 }
 async function sbRestore(){
   if(!sbOn())return;
