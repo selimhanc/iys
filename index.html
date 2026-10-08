@@ -247,7 +247,7 @@ async function cloudAdopt(){
     activeCampaignId=null;activeStoryboardId=null;
     await persist();setSyncStatus('ok');renderCurrentView();
     return cc===0?'empty':'synced';
-  }catch(e){console.error('Supabase pull failed',e);setSyncStatus('err',e.message);dataMode='local';return 'failed'}
+  }catch(e){console.error('Supabase pull failed',e);dataMode='local';const missing=/does not exist|not found|schema cache/i.test(e.message||'');setSyncStatus('err',missing?'veri tabloları yok — supabase-schema.sql çalıştırılmalı':e.message);return'failed'}
 }
 function renderCurrentView(){
   try{
