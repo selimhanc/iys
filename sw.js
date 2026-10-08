@@ -1,4 +1,4 @@
-const CACHE='icerik-yonetim-sistemi-v3';
+const CACHE='icerik-yonetim-sistemi-v4';
 const ASSETS=['./','./index.html','./manifest.json','./supabase-config.js','./icon.svg','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',e=>{
@@ -26,13 +26,13 @@ self.addEventListener('fetch',e=>{
     return;
   }
 
+  // network-first: always fresh when online, still works offline from cache
   e.respondWith(
-    caches.match(req).then(cached=>{
-      const network=fetch(req).then(r=>{
+    fetch(req)
+      .then(r=>{
         if(r&&r.ok){const copy=r.clone();caches.open(CACHE).then(c=>c.put(req,copy))}
         return r;
-      }).catch(()=>cached);
-      return cached||network;
-    })
+      })
+      .catch(()=>caches.match(req))
   );
 });
