@@ -30,6 +30,7 @@ header .brand{min-width:0}.brand h1{font-weight:700;letter-spacing:-.2px}
 .nav button.active{background:#3b73e8;color:#fff}
 .navGroup{display:flex;flex-direction:column;gap:4px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
 .navGroup:before{content:'Yönetim';font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#7f8794;padding:0 12px 4px}
+.navClose{display:none}
 .nav:before{content:'ANA MENÜ';position:absolute;top:56px;left:24px;font-size:10px;letter-spacing:.12em;color:#7f8794}
 .workspace{margin-left:var(--sidebar-w);max-width:none;padding:22px 26px}
 .topbar{margin-left:var(--sidebar-w);position:sticky;top:58px;z-index:60}
@@ -50,8 +51,12 @@ body.nav-collapsed .navGroup button{font-size:0}
 .checkItem span{font-size:13px}
 @media(max-width:800px){
  header{margin-left:0}.workspace{margin-left:0;padding:16px}.topbar{margin-left:0;top:58px}
- .nav{transform:translateX(-105%);transition:transform .18s ease;width:min(280px,86vw);box-shadow:18px 0 45px rgba(0,0,0,.3)}
- .nav.open{transform:translateX(0)}
+  .nav{transform:translateX(-105%);transition:transform .18s ease;width:min(280px,86vw);box-shadow:18px 0 45px rgba(0,0,0,.3)}
+  .nav.open{transform:translateX(0)}
+  .navClose{display:flex;position:absolute;top:14px;right:12px;width:38px;height:38px;padding:0;align-items:center;justify-content:center;font-size:17px;background:var(--panel);color:var(--text)}
+  .navBackdrop{position:fixed;inset:0;z-index:85;background:rgba(0,0,0,.55);display:none}
+  .navBackdrop.show{display:block}
+  body.nav-open{overflow:hidden}
  body.nav-collapsed header,body.nav-collapsed .workspace,body.nav-collapsed .topbar{margin-left:0}
  body.nav-collapsed .nav{width:min(280px,86vw)}
  body.nav-collapsed .nav button{font-size:13px;text-align:left;padding:10px 12px}
@@ -102,7 +107,8 @@ body.nav-collapsed .navGroup button{font-size:0}
 </head>
 <body>
 <header>
-    <div class="brand"><button class="menuBtn" onclick="toggleNav()">☰</button><h1>📋 İçerik Yönetim Sistemi</h1></div><nav id="nav" class="nav"><button id="navCampaigns" onclick="showCampaigns()">📁 Kampanyalar</button><button id="navContent" onclick="showStoryboards()">🧩 İçerikler</button><button onclick="openCampaignModal()">＋ Kampanya</button><button onclick="openStoryboardModal()">＋ İçerik</button><button onclick="openTeamModal()">👥 Ekip</button><button onclick="openTimeline()">📅 Timeline</button><button onclick="openSettingsModal()">⚙ Ayarlar</button><button onclick="toggleTheme()" id="themeBtn">☀️</button></nav><div class="headerActions"><button id="pwaInstallBtn" class="secondary" hidden onclick="installKampanyaApp()">📲 Kur</button><div id="adminUserPanel" class="adminUserPanel"><button onclick="openUserAdmin()">👥 Kullanıcılar</button><button onclick="authLogout()">Çıkış</button></div></div></header>
+    <div class="brand"><button class="menuBtn" onclick="toggleNav()">☰</button><h1>📋 İçerik Yönetim Sistemi</h1></div><nav id="nav" class="nav"><button class="navClose" onclick="closeNav()">✕</button><button id="navCampaigns" onclick="showCampaigns()">📁 Kampanyalar</button><button id="navContent" onclick="showStoryboards()">🧩 İçerikler</button><button onclick="openCampaignModal()">＋ Kampanya</button><button onclick="openStoryboardModal()">＋ İçerik</button><button onclick="openTeamModal()">👥 Ekip</button><button onclick="openTimeline()">📅 Timeline</button><button onclick="openSettingsModal()">⚙ Ayarlar</button><button onclick="toggleTheme()" id="themeBtn">☀️</button></nav><div class="headerActions"><button id="pwaInstallBtn" class="secondary" hidden onclick="installKampanyaApp()">📲 Kur</button><div id="adminUserPanel" class="adminUserPanel"><button onclick="openUserAdmin()">👥 Kullanıcılar</button><button onclick="authLogout()">Çıkış</button></div></div></header>
+<div id="navBackdrop" class="navBackdrop" onclick="closeNav()"></div>
 <div id="topbar" class="topbar"><div><strong id="contextTitle">Kampanyalar</strong><div id="contextSub" class="muted">Önce kampanya oluştur, sonra storyboard ekle.</div></div><div class="actions"><span id="storageStatus" class="storage">IndexedDB hazırlanıyor…</span><button id="backBtn" style="display:none" onclick="backToPrevious()">← Geri</button></div></div>
 <main class="workspace">
 <section id="campaignView" class="view active"><div class="toolbar"><h2>Kampanyalar</h2><div class="actions"><div class="viewToggle"><button id="campGridBtn" class="active" onclick="setCampaignView('grid')">▦ Kutu</button><button id="campListBtn" onclick="setCampaignView('list')">☷ Liste</button></div><button class="primary" onclick="openCampaignModal()">＋ Yeni Kampanya</button></div></div><div id="campaignsContainer"></div></section>
@@ -133,7 +139,11 @@ async function idbSet(v){const d=await openDB();return new Promise((res,rej)=>{c
 async function persist(){try{await idbSet(db);updateStorageStatus()}catch(e){console.error(e);document.getElementById('storageStatus').textContent='IndexedDB kaydı başarısız'}}
 async function updateStorageStatus(){try{const q=await navigator.storage?.estimate?.();if(q){const used=(q.usage/1024/1024).toFixed(2),quota=(q.quota/1024/1024).toFixed(0);document.getElementById('storageStatus').textContent=`IndexedDB · ${used} MB / ~${quota} MB`}}catch{} }
 function toggleTheme(){document.body.classList.toggle('light');localStorage.setItem('sb_theme',document.body.classList.contains('light')?'light':'dark');updateThemeBtn()}function updateThemeBtn(){document.getElementById('themeBtn').textContent=document.body.classList.contains('light')?'🌙 Koyu':'☀️ Açık'}
-function toggleNav(){if(innerWidth<=800){document.getElementById('nav').classList.toggle('open')}else{document.body.classList.toggle('nav-collapsed');localStorage.setItem('adminNavCollapsed',document.body.classList.contains('nav-collapsed')?'1':'0')}}function closeNav(){if(innerWidth<=800)document.getElementById('nav').classList.remove('open')}
+function navBackdrop(){return document.getElementById('navBackdrop')}
+function toggleNav(){if(innerWidth<=800){const o=document.getElementById('nav').classList.toggle('open');navBackdrop()?.classList.toggle('show',o);document.body.classList.toggle('nav-open',o)}else{document.body.classList.toggle('nav-collapsed');localStorage.setItem('adminNavCollapsed',document.body.classList.contains('nav-collapsed')?'1':'0')}}
+function closeNav(){document.getElementById('nav').classList.remove('open');navBackdrop()?.classList.remove('show');document.body.classList.remove('nav-open')}
+document.getElementById('nav').addEventListener('click',e=>{if(innerWidth<=800&&e.target.closest('button'))closeNav()});
+window.addEventListener('resize',()=>{if(innerWidth>800)closeNav()});
 function setView(id){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function showCampaigns(){setView('campaignView');activeStoryboardId=null;document.getElementById('backBtn').style.display='none';document.getElementById('contextTitle').textContent='Kampanyalar';document.getElementById('contextSub').textContent='Kampanyalarını kutu veya liste görünümünde yönet.';renderCampaigns();closeNav()}
 function showStoryboards(campaignId=null){if(campaignId)activeCampaignId=campaignId;setView('storyboardView');activeStoryboardId=null;document.getElementById('backBtn').style.display='none';const c=db.campaigns.find(x=>x.id===activeCampaignId);document.getElementById('contextTitle').textContent=c?c.name:'Tüm Storyboardlar';document.getElementById('contextSub').textContent=c?'Bu kampanyaya bağlı storyboardlar.':'Kampanyalar arasındaki storyboardlara geçiş yapabilirsin.';renderStoryboards();closeNav()}
@@ -864,7 +874,7 @@ async function authLogout(){
 
 /* ---------- admin: user management ---------- */
 function closeUserAdmin(){const c=document.getElementById('usersContainer');if(c){c.classList.remove('show');c.scrollTop=0}}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeUserAdmin()});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;closeUserAdmin();closeNav()});
 function openUserAdmin(){if(!currentAuth()?.isAdmin)return;renderUserAdmin()}
 async function renderUserAdmin(){
   const c=document.getElementById('usersContainer');
