@@ -1,14 +1,15 @@
 {
-  "name": "Kampanya & İçerik Yönetimi",
-  "short_name": "Kampanya İçerik",
-  "description": "Kampanya, içerik, sahne, ekip ve proje yönetimi.",
-  "start_url": "./index.html",
+  "name": "İçerik Yönetim Sistemi",
+  "short_name": "İçerik Yönetimi",
+  "description": "Proje, kampanya, içerik, ekip ve görev yönetimi.",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f3f0e8",
-  "theme_color": "#1f2937",
   "orientation": "any",
+  "background_color": "#0f1115",
+  "theme_color": "#181b21",
   "icons": [
-    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+    {"src":"./icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"./icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
   ]
 }
