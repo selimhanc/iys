@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <link rel="manifest" href="./manifest.json">
+<script src="./supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <meta name="theme-color" content="#182230">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -286,7 +288,8 @@ const __oldRenderEditor2=renderEditor;renderEditor=renderEditor2;
 const __oldShowScenePage=showScenePage;showScenePage=function(storyId,sceneId,fromHash=false){const s=db.storyboards.find(x=>x.id===storyId),sc=sceneById(s,sceneId);if(!s||!sc)return;if(!isPrintContent(s))return __oldShowScenePage(storyId,sceneId,fromHash);activeStoryboardId=storyId;activeCampaignId=s.campaignId;sel=s.scenes.findIndex(x=>x.id===sceneId);setView('sceneView');document.getElementById('backBtn').style.display='inline-block';document.getElementById('contextTitle').textContent=sc.name;document.getElementById('contextSub').textContent=s.name+' · Sayfa';const body=document.getElementById('scenePageBody');sc.comments=sc.comments||[];body.innerHTML=`<div class="panel"><div class="tabs"><button class="tab active" onclick="pageTab('page',this)">📝 Sayfa</button><button class="tab" onclick="pageTab('comments',this)">💬 Yorumlar</button><button class="tab" onclick="pageTab('tech',this)">⚙ Teknik</button></div><div id="pageTabPage"><div class="row"><div><label>Sayfa adı</label><input id="pg_name" value="${esc(sc.name)}"></div><div><label>Onay</label><select id="pg_approval"><option ${sc.approval==='Bekliyor'?'selected':''}>Bekliyor</option><option ${sc.approval==='Düzeltme'?'selected':''}>Düzeltme</option><option ${sc.approval==='Onaylandı'?'selected':''}>Onaylandı</option></select></div></div><div class="row"><div><label>Görsel seçim ataması</label><select id="pg_visual"><option value="">Atama yok</option>${printCandidates(s,'Görsel seçim').map(m=>`<option value="${m.id}" ${m.id===sc.visualAssigneeId?'selected':''}>${esc(m.name)}</option>`).join('')}</select></div><div><label>Yazılı metin ataması</label><select id="pg_text"><option value="">Atama yok</option>${printCandidates(s,'Yazılı metin').map(m=>`<option value="${m.id}" ${m.id===sc.textAssigneeId?'selected':''}>${esc(m.name)}</option>`).join('')}</select></div></div><label>Görsel notu</label><textarea id="pg_visualNote">${esc(sc.visualNote||'')}</textarea><label>Yazılı metin</label><textarea id="pg_textNote">${esc(sc.textNote||'')}</textarea><label>Deadline</label><input id="pg_deadline" type="date" value="${sc.deadline||''}"><label><input type="checkbox" id="pg_done" ${sc.done?'checked':''}> Sayfa tamamlandı</label></div><div id="pageTabComments" style="display:none"><label>Sayfa yorumları</label><textarea id="pg_comments">${esc(sc.comments.join('\n'))}</textarea></div><div id="pageTabTech" style="display:none"><label>Sayfa numarası</label><input id="pg_number" type="number" min="1" value="${sc.pageNumber||1}"><div class="hint">Basılı içeriklerde sayfalar, videodaki sahneler gibi bağımsız yönetilir.</div></div><button class="primary" onclick="savePage()">Kaydet</button></div>`;if(!fromHash)setHash('page',storyId,sceneId);closeNav()}
 function pageTab(t,btn){['page','comments','tech'].forEach(x=>{const e=document.getElementById('pageTab'+x.charAt(0).toUpperCase()+x.slice(1));if(e)e.style.display=x===t?'block':'none'});document.querySelectorAll('#scenePageBody .tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}
 async function savePage(){const s=current(),sc=s?.scenes[sel];if(!s||!sc)return;sc.name=document.getElementById('pg_name').value;sc.approval=document.getElementById('pg_approval').value;sc.visualAssigneeId=document.getElementById('pg_visual').value||null;sc.textAssigneeId=document.getElementById('pg_text').value||null;sc.visualNote=document.getElementById('pg_visualNote').value;sc.textNote=document.getElementById('pg_textNote').value;sc.deadline=document.getElementById('pg_deadline').value||null;sc.done=document.getElementById('pg_done').checked;sc.comments=(document.getElementById('pg_comments').value||'').split(/\n+/).map(x=>x.trim()).filter(Boolean);sc.pageNumber=Number(document.getElementById('pg_number').value)||sc.pageNumber||1;await persist();showScenePage(s.id,sc.id,true)}
-function routeFromHash2(){const p=location.hash.replace(/^#/,'').split('/').filter(Boolean).map(decodeURIComponent);if(p[0]==='page'&&p[1]&&p[2])return showScenePage(p[1],p[2],true);return routeFromHash()}
+const __baseRouteFromHash=routeFromHash;
+function routeFromHash2(){const p=location.hash.replace(/^#/,'').split('/').filter(Boolean).map(decodeURIComponent);if(p[0]==='page'&&p[1]&&p[2])return showScenePage(p[1],p[2],true);return __baseRouteFromHash()}
 routeFromHash=routeFromHash2;
 requiredDutiesForContent=requiredDutiesForContent2;
 renderContentRolePanel=renderContentRolePanel2;
@@ -750,45 +753,164 @@ function bindNewContentV4(){const t=document.getElementById('newContentType');if
 <div id="adminUserPanel" class="adminUserPanel"><button onclick="openUserAdmin()">👥 Kullanıcılar</button><button onclick="authLogout()">Çıkış</button></div>
 
 <script>
-/* ===== Local-first access control / GitHub-ready auth layer =====
-   This works immediately in the browser. For multi-device production use,
-   replace the persistence functions with a server/Supabase/Firebase adapter.
+/* ===== Access control layer: local-first + optional Supabase backend =====
+   Local mode (supabase-config.js -> mode:'local') keeps everything in localStorage.
+   Supabase mode signs in against auth.users and reads the public.profiles table.
+   Set mode/url/anonKey in supabase-config.js to switch.
 */
+const SB=window.SB_CONFIG||{};
+const SB_EMAIL_DOMAIN=SB.emailDomain||'iys.app';
 const AUTH_KEY='cms_auth_users_v1', AUTH_SESSION='cms_auth_session_v1';
-let authUsers=[];
+let authUsers=[],sb=null,sbProfile=null;
+const sbOn=()=>SB.mode!=='local'&&!!SB.url&&!!SB.anonKey&&!!window.supabase;
+
 function authLoad(){try{authUsers=JSON.parse(localStorage.getItem(AUTH_KEY)||'[]')}catch(e){authUsers=[]}}
 function authSave(){localStorage.setItem(AUTH_KEY,JSON.stringify(authUsers))}
 function authHash(v){return crypto?.subtle?crypto.subtle.digest('SHA-256',new TextEncoder().encode(v)).then(b=>Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')):Promise.resolve(btoa(unescape(encodeURIComponent(v))))}
 function randomPassword(n=8){const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';let a=new Uint32Array(n);crypto.getRandomValues(a);return Array.from(a,x=>chars[x%chars.length]).join('')}
-function authMessage(id,msg,error=false){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.classList.toggle('error',!!error);el.classList.add('show')}
+function authMessage(id,msg,error=false){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.classList.toggle('error',!!error);el.classList.toggle('show',!!msg)}
 function switchAuthTab(tab){document.getElementById('authLoginTab').classList.toggle('active',tab==='login');document.getElementById('authRegisterTab').classList.toggle('active',tab==='register');document.getElementById('authLoginPane').classList.toggle('active',tab==='login');document.getElementById('authRegisterPane').classList.toggle('active',tab==='register')}
 function generateRegisterPassword(){const p=randomPassword(8);document.getElementById('regPassword').value=p;document.getElementById('regPassword2').value=p;document.getElementById('regPassword').type='text';document.getElementById('regPassword2').type='text'}
 function normalizeAuthUsername(v){return String(v||'').trim().toLowerCase().replace(/\s+/g,'')}
-function currentAuth(){const u=localStorage.getItem(AUTH_SESSION);return authUsers.find(x=>x.username===u&&x.status==='active')||null}
-function showAuthGate(show){document.getElementById('authGate').classList.toggle('show',show);document.getElementById('adminUserPanel').classList.toggle('show',!!currentAuth()?.isAdmin)}
-async function ensureAdmin(){authLoad();if(authUsers.some(x=>x.isAdmin))return;const pass=randomPassword(8);const hash=await authHash(pass);authUsers.push({id:'admin-'+Date.now(),username:'admin',phone:'',passwordHash:hash,status:'active',isAdmin:true,createdAt:new Date().toISOString()});authSave();const n=document.getElementById('firstAdminNotice');n.innerHTML='İlk yönetici hesabı oluşturuldu. <b>Kullanıcı adı:</b> admin &nbsp; <b>Şifre:</b> <span class="quickPassword"><code>'+pass+'</code><button class="secondary" onclick="navigator.clipboard.writeText(\''+pass+'\')">Kopyala</button></span><br><small>Bu şifre yalnızca ilk kurulumda gösterilir. Telefon numaranı kullanıcı yönetiminden güncelleyebilirsin.</small>';n.classList.add('show')}
-async function authLogin(){authLoad();const username=normalizeAuthUsername(document.getElementById('loginUsername').value);const pass=document.getElementById('loginPassword').value;const u=authUsers.find(x=>x.username===username);if(!u){authMessage('loginMsg','Kullanıcı adı veya şifre hatalı.',true);return}if(u.status==='pending'){authMessage('loginMsg','Üyelik talebin admin onayı bekliyor.',true);return}if(u.status==='rejected'){authMessage('loginMsg','Üyelik talebin reddedilmiş.',true);return}const h=await authHash(pass);if(h!==u.passwordHash){authMessage('loginMsg','Kullanıcı adı veya şifre hatalı.',true);return}localStorage.setItem(AUTH_SESSION,u.username);showAuthGate(false);if(typeof notifySave==='function')notifySave('✓ Giriş yapıldı','success')}
-async function authRegister(){authLoad();const username=normalizeAuthUsername(document.getElementById('regUsername').value);const phone=document.getElementById('regPhone').value.trim();const pass=document.getElementById('regPassword').value;const pass2=document.getElementById('regPassword2').value;if(username.length<3){authMessage('registerMsg','Kullanıcı adı en az 3 karakter olmalı.',true);return}if(pass.length<8){authMessage('registerMsg','Şifre en az 8 karakter olmalı.',true);return}if(pass!==pass2){authMessage('registerMsg','Şifreler eşleşmiyor.',true);return}if(authUsers.some(x=>x.username===username)){authMessage('registerMsg','Bu kullanıcı adı zaten kullanılıyor.',true);return}const hash=await authHash(pass);authUsers.push({id:'u-'+Date.now(),username,phone,passwordHash:hash,status:'pending',isAdmin:false,createdAt:new Date().toISOString()});authSave();authMessage('registerMsg','Üyelik talebin alındı. Admin onayından sonra giriş yapabilirsin.');document.getElementById('regPassword').value='';document.getElementById('regPassword2').value=''}
-function authLogout(){localStorage.removeItem(AUTH_SESSION);showAuthGate(true);switchAuthTab('login')}
-function openUserAdmin(){if(!currentAuth()?.isAdmin)return;renderUserAdmin();if(typeof showView==='function'){try{showView('users')}catch(e){}}else{alert('Kullanıcı yönetimi hazır.')}}
-function renderUserAdmin(){let c=document.getElementById('usersContainer');if(!c){c=document.createElement('div');c.id='usersContainer';c.className='userAdminPanel';document.body.appendChild(c)}authLoad();const users=authUsers.filter(x=>!x.isAdmin);c.innerHTML='<div class="card"><div class="sectionHead"><div><h2>👥 Kullanıcı Yönetimi</h2><p class="muted">Üyelik talepleri, onay ve şifre işlemleri</p></div><button class="secondary" onclick="c.remove()">Kapat</button></div>'+ (users.length?users.map(u=>'<div class="userRequest"><div class="meta"><b>'+escapeHtml(u.username)+'</b><br><span class="muted">'+escapeHtml(u.phone||'Telefon yok')+'</span><br><span class="statusPill '+u.status+'">'+(u.status==='pending'?'Onay bekliyor':u.status==='active'?'Aktif':'Reddedildi')+'</span></div><div class="actions">'+(u.status==='pending'?'<button class="primary" onclick="approveUser(\''+u.id+'\')">✓ Onayla</button><button class="secondary" onclick="rejectUser(\''+u.id+'\')">Reddet</button>':'')+'<button class="secondary" onclick="generateUserPassword(\''+u.id+'\')">🔑 Şifre üret</button><button class="secondary waBtn" onclick="shareUserWhatsApp(\''+u.id+'\')">💬 WhatsApp</button></div></div>').join(''):'<div class="empty">Henüz kullanıcı yok.</div>')+'</div>';c.scrollIntoView({behavior:'smooth',block:'start'})}
 function escapeHtml(v){return String(v||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-function approveUser(id){const u=authUsers.find(x=>x.id===id);if(!u)return;u.status='active';u.approvedAt=new Date().toISOString();authSave();renderUserAdmin();}
-function rejectUser(id){const u=authUsers.find(x=>x.id===id);if(!u)return;u.status='rejected';authSave();renderUserAdmin();}
-async function generateUserPassword(id){
- const u=authUsers.find(x=>x.id===id); if(!u)return;
- const p=randomPassword(8); u.passwordHash=await authHash(p); u.status='active'; u.generatedPasswordOnce=p; authSave();
- const box=document.createElement('div'); box.className='authGate show';
- const card=document.createElement('div'); card.className='authCard';
- card.innerHTML='<div class="authBrand"><div class="mark">🔑</div><h2>Yeni şifre oluşturuldu</h2><p>'+escapeHtml(u.username)+' için</p></div><div class="passwordReveal"><strong>'+p+'</strong></div>';
- const actions=document.createElement('div'); actions.className='authActions';
- const copy=document.createElement('button'); copy.className='secondary'; copy.textContent='Kopyala'; copy.onclick=async()=>{await navigator.clipboard?.writeText(p);copy.textContent='Kopyalandı ✓'};
- const wa=document.createElement('button'); wa.className='secondary waBtn'; wa.textContent='💬 WhatsApp'; wa.onclick=()=>window.open('https://wa.me/?text='+encodeURIComponent('Kullanıcı adı: '+u.username+'\nYeni şifre: '+p),'_blank');
- const done=document.createElement('button'); done.className='primary'; done.textContent='Tamam'; done.onclick=()=>box.remove();
- actions.append(copy,wa,done); card.appendChild(actions); box.appendChild(card); document.body.appendChild(box); renderUserAdmin();
+function sbAuthEmail(username){return username+'@'+SB_EMAIL_DOMAIN}
+
+/* ---------- Supabase session ---------- */
+async function sbClient(){
+  if(!sb){sb=window.supabase.createClient(SB.url,SB.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});sb.auth.onAuthStateChange((event,session)=>{if(!session&&event!=='INITIAL_SESSION'){sbProfile=null;showAuthGate(true)}})}
+  return sb;
 }
-function shareUserWhatsApp(id){const u=authUsers.find(x=>x.id===id);if(!u)return;const text='Merhaba '+u.username+'\\n\\nİçerik Yönetim Sistemi kullanıcı bilgileriniz hazır.\\nKullanıcı adı: '+u.username+'\\n\\nŞifrenizi güvenli şekilde yöneticinizden alabilirsiniz.';window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank')}
-async function initAuth(){await ensureAdmin();authLoad();if(currentAuth())showAuthGate(false);else showAuthGate(true)}
-window.addEventListener('DOMContentLoaded',()=>{setTimeout(initAuth,80)})
+async function refreshProfile(){
+  if(!sbOn())return null;
+  const c=await sbClient();
+  const {data:{user}}=await c.auth.getUser();
+  if(!user){sbProfile=null;showAuthGate(true);return null}
+  const {data,error}=await c.from('profiles').select('id,username,phone,status,is_admin,created_at,approved_at').eq('id',user.id).single();
+  if(error||!data){sbProfile=null;showAuthGate(true);return null}
+  sbProfile={id:data.id,username:data.username,phone:data.phone,status:data.status,isAdmin:data.is_admin};
+  if(data.status==='active'){showAuthGate(false)}
+  else{showAuthGate(true);authMessage('loginMsg',data.status==='pending'?'Uyelik talebin admin onayi bekliyor.':'Uyelik talebin reddedilmis.',true)}
+  return sbProfile;
+}
+async function sbRestore(){
+  if(!sbOn())return;
+  const c=await sbClient();
+  const {data}=await c.auth.getSession();
+  if(data.session)await refreshProfile();else showAuthGate(true);
+}
+function currentAuth(){return sbOn()?sbProfile:authUsers.find(x=>x.username===localStorage.getItem(AUTH_SESSION)&&x.status==='active')||null}
+function showAuthGate(show){document.getElementById('authGate').classList.toggle('show',show);document.getElementById('adminUserPanel').classList.toggle('show',!!currentAuth()?.isAdmin)}
+async function ensureAdmin(){authLoad();if(authUsers.some(x=>x.isAdmin))return;const pass=randomPassword(8);const hash=await authHash(pass);authUsers.push({id:'admin-'+Date.now(),username:'admin',phone:'',passwordHash:hash,status:'active',isAdmin:true,createdAt:new Date().toISOString()});authSave();const n=document.getElementById('firstAdminNotice');n.innerHTML='Ilk yonetici hesabi olusturuldu. <b>Kullanici adi:</b> admin &nbsp; <b>Sifre:</b> <span class="quickPassword"><code>'+pass+'</code><button class="secondary" onclick="navigator.clipboard.writeText(\''+pass+'\')">Kopyala</button></span><br><small>Bu sifre yalnizca ilk kurulumda gosterilir.</small>';n.classList.add('show')}
+
+/* ---------- login / register ---------- */
+async function authLogin(){
+  const username=normalizeAuthUsername(document.getElementById('loginUsername').value),pass=document.getElementById('loginPassword').value;
+  if(!username||!pass){authMessage('loginMsg','Kullanici adi ve sifre gerekli.',true);return}
+  if(sbOn())return sbLogin(username,pass);
+  authLoad();const u=authUsers.find(x=>x.username===username);
+  if(!u){authMessage('loginMsg','Kullanici adi veya sifre hatali.',true);return}
+  if(u.status==='pending'){authMessage('loginMsg','Uyelik talebin admin onayi bekliyor.',true);return}
+  if(u.status==='rejected'){authMessage('loginMsg','Uyelik talebin reddedilmis.',true);return}
+  const h=await authHash(pass);if(h!==u.passwordHash){authMessage('loginMsg','Kullanici adi veya sifre hatali.',true);return}
+  localStorage.setItem(AUTH_SESSION,u.username);showAuthGate(false);if(typeof notifySave==='function')notifySave('Giris yapildi','success')
+}
+async function sbLogin(username,pass){
+  authMessage('loginMsg','');
+  const c=await sbClient();
+  const {error}=await c.auth.signInWithPassword({email:sbAuthEmail(username),password:pass});
+  if(error){authMessage('loginMsg','Kullanici adi veya sifre hatali.',true);return}
+  await refreshProfile();
+  if(sbProfile?.status==='active'&&typeof notifySave==='function')notifySave('Giris yapildi','success');
+}
+async function authRegister(){
+  const username=normalizeAuthUsername(document.getElementById('regUsername').value),phone=document.getElementById('regPhone').value.trim(),pass=document.getElementById('regPassword').value,pass2=document.getElementById('regPassword2').value;
+  if(username.length<3){authMessage('registerMsg','Kullanici adi en az 3 karakter olmali.',true);return}
+  if(pass.length<8){authMessage('registerMsg','Sifre en az 8 karakter olmali.',true);return}
+  if(pass!==pass2){authMessage('registerMsg','Sifreler eslesmiyor.',true);return}
+  if(sbOn())return sbRegister(username,phone,pass);
+  authLoad();if(authUsers.some(x=>x.username===username)){authMessage('registerMsg','Bu kullanici adi zaten kullanimda.',true);return}
+  const hash=await authHash(pass);authUsers.push({id:'u-'+Date.now(),username,phone,passwordHash:hash,status:'pending',isAdmin:false,createdAt:new Date().toISOString()});authSave();authMessage('registerMsg','Uyelik talebin alindi. Admin onayindan sonra giris yapabilirsin.');document.getElementById('regPassword').value='';document.getElementById('regPassword2').value=''
+}
+function sbErrorText(e){const m=String(e?.message||'');if(/already registered|already been registered/i.test(m))return'Bu kullanici adi zaten kullanimda.';if(/Password should be/i.test(m))return'Sifre en az 8 karakter olmali.';if(/Email not confirmed/i.test(m))return'E-posta dogrulamasi kapali olmali (Auth > Providers > Email > Confirm email = OFF).';return m||'Islem basarisiz.'}
+async function sbRegister(username,phone,pass){
+  const c=await sbClient();
+  const {error}=await c.auth.signUp({email:sbAuthEmail(username),password:pass,options:{data:{username,phone}}});
+  if(error){authMessage('registerMsg',sbErrorText(error),true);return}
+  await refreshProfile();
+  if(sbProfile?.status==='pending'){authMessage('registerMsg','Uyelik talebin alindi. Admin onayindan sonra giris yapabilirsin.');document.getElementById('regPassword').value='';document.getElementById('regPassword2').value=''}
+  else if(!sbProfile){authMessage('registerMsg','E-posta dogrulamasi acik. Authentication > Providers > Email > Confirm email = OFF yap.',true)}
+}
+async function authLogout(){
+  if(sbOn()){const c=await sbClient();await c.auth.signOut();sbProfile=null}
+  else localStorage.removeItem(AUTH_SESSION);
+  showAuthGate(true);switchAuthTab('login');authMessage('loginMsg','')
+}
+
+/* ---------- admin: user management ---------- */
+function openUserAdmin(){if(!currentAuth()?.isAdmin)return;renderUserAdmin()}
+async function renderUserAdmin(){
+  let c=document.getElementById('usersContainer');
+  if(!c){c=document.createElement('div');c.id='usersContainer';c.className='userAdminPanel';document.body.appendChild(c)}
+  const users=sbOn()?await sbListUsers():authUsers.filter(x=>!x.isAdmin);
+  if(sbOn()&&!users.length){c.innerHTML='<div class="card"><div class="sectionHead"><div><h2>Kullanicilar</h2><p class="muted">Veri alinamadi. Konsolu kontrol et.</p></div><button class="secondary" onclick="this.closest(\'#usersContainer\').remove()">Kapat</button></div><div class="empty">Henuz kullanici yok.</div></div>';c.scrollIntoView({behavior:'smooth',block:'start'});return}
+  c.innerHTML='<div class="card"><div class="sectionHead"><div><h2>Kullanicilar</h2><p class="muted">Uyelik talepleri, onay ve sifre islemleri</p></div><button class="secondary" onclick="this.closest(\'#usersContainer\').remove()">Kapat</button></div>'+(users.length?users.map(u=>'<div class="userRequest"><div class="meta"><b>'+escapeHtml(u.username)+'</b><br><span class="muted">'+escapeHtml(u.phone||'Telefon yok')+'</span><br><span class="statusPill '+u.status+'">'+(u.status==='pending'?'Onay bekliyor':u.status==='active'?'Aktif':'Reddedildi')+'</span></div><div class="actions">'+(u.status==='pending'?'<button class="primary" onclick="approveUser(\''+u.id+'\')">Onayla</button><button class="secondary" onclick="rejectUser(\''+u.id+'\')">Reddet</button>':'')+'<button class="secondary" onclick="generateUserPassword(\''+u.id+'\')">Sifre uret</button><button class="secondary waBtn" onclick="shareUserWhatsApp(\''+u.id+'\')">WhatsApp</button></div></div>').join(''):'<div class="empty">Henuz kullanici yok.</div>')+'</div>';
+  c.scrollIntoView({behavior:'smooth',block:'start'})
+}
+async function sbListUsers(){
+  try{const c=await sbClient();const {data,error}=await c.from('profiles').select('id,username,phone,status,is_admin,created_at').neq('is_admin',true).order('created_at',{ascending:false});if(error){console.error(error);return[]}return data||[]}
+  catch(e){console.error(e);return[]}
+}
+async function approveUser(id){
+  if(sbOn()){const c=await sbClient();const {error}=await c.from('profiles').update({status:'active',approved_at:new Date().toISOString()}).eq('id',id);if(error){alert('Onaylanamadi: '+error.message);return}await renderUserAdmin();return}
+  const u=authUsers.find(x=>x.id===id);if(!u)return;u.status='active';u.approvedAt=new Date().toISOString();authSave();renderUserAdmin();
+}
+async function rejectUser(id){
+  if(sbOn()){const c=await sbClient();const {error}=await c.from('profiles').update({status:'rejected',approved_at:null}).eq('id',id);if(error){alert('Reddedilemedi: '+error.message);return}await renderUserAdmin();return}
+  const u=authUsers.find(x=>x.id===id);if(!u)return;u.status='rejected';authSave();renderUserAdmin();
+}
+async function sbAdminAction(body){
+  if(!SB.adminFn)throw new Error('Sifre islemleri icin Edge Function gerekli: supabase/functions/admin-users fonksiyonunu deploy edin ve supabase-config.js icindeki adminFn degerini doldurun.');
+  const c=await sbClient();
+  const {data}=await c.auth.getSession();
+  const r=await fetch(SB.adminFn,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+data.session.access_token},body:JSON.stringify(body)});
+  const json=await r.json().catch(()=>({error:'Sunucu yaniti okunamadi.'}));
+  if(!r.ok||json.error)throw new Error(json.error||('HTTP '+r.status));
+  return json;
+}
+async function generateUserPassword(id){
+  if(sbOn()){
+    let u=null;try{const c=await sbClient();const {data}=await c.from('profiles').select('username').eq('id',id).single();u=data}catch{}
+    let p;
+    try{p=(await sbAdminAction({action:'set-password',userId:id})).password}
+    catch(e){alert(e.message);return}
+    showPasswordDialog(u?.username||'',p);await renderUserAdmin();return;
+  }
+  const u=authUsers.find(x=>x.id===id);if(!u)return;
+  const p=randomPassword(8);u.passwordHash=await authHash(p);u.status='active';u.generatedPasswordOnce=p;authSave();
+  showPasswordDialog(u.username,p);renderUserAdmin();
+}
+function showPasswordDialog(username,p){
+  const box=document.createElement('div');box.className='authGate show';
+  const card=document.createElement('div');card.className='authCard';
+  card.innerHTML='<div class="authBrand"><div class="mark">Sifre olusturuldu</div><h2>'+escapeHtml(username)+' icin</h2><p>Sifre yalnizca simdi gosterilir</p></div><div class="passwordReveal"><strong>'+p+'</strong></div>';
+  const actions=document.createElement('div');actions.className='authActions';
+  const copy=document.createElement('button');copy.className='secondary';copy.textContent='Kopyala';copy.onclick=async()=>{await navigator.clipboard?.writeText(p);copy.textContent='Kopyalandi'};
+  const wa=document.createElement('button');wa.className='secondary waBtn';wa.textContent='WhatsApp';wa.onclick=()=>window.open('https://wa.me/?text='+encodeURIComponent('Kullanici adi: '+username+'\nSifre: '+p),'_blank');
+  const done=document.createElement('button');done.className='primary';done.textContent='Tamam';done.onclick=()=>box.remove();
+  actions.append(copy,wa,done);card.appendChild(actions);box.appendChild(card);document.body.appendChild(box);
+}
+function shareUserWhatsApp(id){
+  let username=id;if(sbOn()){sbClient().then(async c=>{const {data}=await c.from('profiles').select('username').eq('id',id).single();sbShare(data?.username||'')});return}
+  username=(authUsers.find(x=>x.id===id)||{}).username||'';sbShare(username);
+}
+function sbShare(username){const text='Merhaba '+username+'\n\nIcerik Yonetim Sistemi kullanici bilgileriniz hazir.\nKullanici adi: '+username+'\n\nSifrenizi guvenli sekilde yoneticinizden alabilirsiniz.';window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank')}
+
+/* ---------- boot ---------- */
+async function initAuth(){
+  if(sbOn()){await sbRestore();return}
+  await ensureAdmin();authLoad();if(currentAuth())showAuthGate(false);else showAuthGate(true)
+}
+function authBoot(){let tries=0;(async()=>{while(tries++<40){if(sbOn()||window.supabase||SB.mode==='local')break;await new Promise(r=>setTimeout(r,50))}await initAuth()})()}
+window.addEventListener('DOMContentLoaded',()=>{setTimeout(authBoot,80)});
 </script>
 </body></html>

@@ -1,5 +1,5 @@
 const CACHE='icerik-yonetim-sistemi-v3';
-const ASSETS=['./','./index.html','./manifest.json','./icon.svg','./icon-192.png','./icon-512.png'];
+const ASSETS=['./','./index.html','./manifest.json','./supabase-config.js','./icon.svg','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(CACHE).then(c=>Promise.allSettled(ASSETS.map(a=>c.add(a)))).then(()=>self.skipWaiting()));
